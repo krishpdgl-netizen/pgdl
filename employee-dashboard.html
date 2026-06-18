@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Dashboard — Panache WMS</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .my-task-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--gray-100); transition: background .1s; cursor: pointer; }
+    .my-task-item:hover { background: var(--gray-50); }
+    .my-task-item:last-child { border-bottom: none; }
+    .task-check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--gray-300); flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s; }
+    .task-check.done { background: var(--success-500); border-color: var(--success-500); color: #fff; font-size: 10px; }
+    .task-check:hover { border-color: var(--brand-400); }
+    .deadline-bar { position: relative; height: 4px; background: var(--gray-200); border-radius: 99px; margin-top: 4px; }
+    .deadline-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 99px; }
+    .perf-ring { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .daily-activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 20px; border-bottom: 1px solid var(--gray-100); }
+    .daily-activity-item:last-child { border-bottom: none; }
+    .timeline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar"></nav>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <header class="topbar"></header>
+  <main class="main-content fade-in">
+
+    <!-- Greeting banner -->
+    <div style="background:linear-gradient(135deg,var(--brand-700),var(--brand-900));border-radius:var(--radius-xl);padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-30px;right:-30px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.05);"></div>
+      <div style="position:absolute;bottom:-40px;right:120px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.04);"></div>
+      <div style="position:relative;">
+        <div style="color:rgba(255,255,255,.7);font-size:13px;font-weight:500;">Good morning,</div>
+        <div style="color:#fff;font-size:26px;font-weight:800;letter-spacing:-.5px;margin:4px 0 8px;">Sarah Chen 👋</div>
+        <div style="color:rgba(255,255,255,.65);font-size:13px;">You have <strong style="color:#fff;">8 tasks</strong> today · 2 due this week · Sprint ends in <strong style="color:#fff;">4 days</strong></div>
+      </div>
+      <div style="position:absolute;right:32px;top:50%;transform:translateY(-50%);display:flex;gap:16px;">
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:800;color:#fff;">98%</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.6);">Performance</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.2);"></div>
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:800;color:#fff;">47</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.6);">Tasks done</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid section-gap">
+      <div class="kpi-card blue">
+        <div class="kpi-icon blue">📋</div>
+        <div class="kpi-label">My Tasks</div>
+        <div class="kpi-value">8</div>
+        <div class="kpi-meta">3 due this week</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon green">✅</div>
+        <div class="kpi-label">Completed</div>
+        <div class="kpi-value">47</div>
+        <div class="kpi-meta">This sprint</div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-icon orange">⏰</div>
+        <div class="kpi-label">Overdue</div>
+        <div class="kpi-value">0</div>
+        <div class="kpi-meta">All caught up! 🎉</div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-icon purple">⭐</div>
+        <div class="kpi-label">Performance Score</div>
+        <div class="kpi-value">98%</div>
+        <div class="kpi-meta"><span class="kpi-change up">↑ Top 5%</span> in team</div>
+      </div>
+    </div>
+
+    <div class="grid-2-1 section-gap">
+      <!-- My Tasks -->
+      <div>
+        <div class="card section-gap">
+          <div class="card-header">
+            <h3 class="card-title">My Tasks</h3>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost btn-sm task-filter-btn active" onclick="filterMyTasks('all',this)">All</button>
+              <button class="btn btn-ghost btn-sm task-filter-btn" onclick="filterMyTasks('todo',this)">Todo</button>
+              <button class="btn btn-ghost btn-sm task-filter-btn" onclick="filterMyTasks('in-progress',this)">Active</button>
+              <button class="btn btn-ghost btn-sm task-filter-btn" onclick="filterMyTasks('done',this)">Done</button>
+            </div>
+          </div>
+          <div class="card-body-p0" id="my-tasks-list">
+            ${[
+              { id:1, title:'API Integration Module',    priority:'high',   status:'in-progress', due:'Jun 20', done:false },
+              { id:2, title:'Write Unit Tests',           priority:'medium', status:'in-progress', due:'Jun 22', done:false },
+              { id:3, title:'Code Review — PR #142',      priority:'high',   status:'todo',        due:'Jun 21', done:false },
+              { id:4, title:'Update API Documentation',   priority:'low',    status:'todo',        due:'Jun 24', done:false },
+              { id:5, title:'Performance Profiling',      priority:'medium', status:'todo',        due:'Jun 25', done:false },
+              { id:6, title:'Fix Auth Bug #88',           priority:'high',   status:'todo',        due:'Jun 22', done:false },
+              { id:7, title:'DB Schema Review',           priority:'low',    status:'done',        due:'Jun 17', done:true  },
+              { id:8, title:'Sprint Planning Notes',      priority:'low',    status:'done',        due:'Jun 16', done:true  },
+            ].map(t => `
+              <div class="my-task-item" data-status="${t.status}">
+                <div class="task-check ${t.done?'done':''}" onclick="toggleTask(this)">${t.done?'✓':''}</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:13px;font-weight:600;color:var(--gray-${t.done?'400':'900'});text-decoration:${t.done?'line-through':'none'};">${t.title}</div>
+                  <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">Due ${t.due}</div>
+                </div>
+                <span class="badge badge-${t.priority==='high'?'red':t.priority==='medium'?'orange':'gray'}">
+                  <span class="priority-dot dot-${t.priority}"></span>${t.priority}
+                </span>
+                <span class="badge badge-${t.status==='done'?'green':t.status==='in-progress'?'blue':'gray'}" style="min-width:80px;justify-content:center;">
+                  ${t.status==='done'?'Done':t.status==='in-progress'?'Active':'Todo'}
+                </span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Upcoming Deadlines -->
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">⏰ Upcoming Deadlines</h3></div>
+          <div class="card-body">
+            ${[
+              { title:'Code Review — PR #142', due:'Jun 21', daysLeft:3, pct:70, color:'var(--warning-500)' },
+              { title:'API Integration Module', due:'Jun 20', daysLeft:2, pct:85, color:'var(--danger-500)' },
+              { title:'Write Unit Tests', due:'Jun 22', daysLeft:4, pct:55, color:'var(--brand-500)' },
+              { title:'Fix Auth Bug #88', due:'Jun 22', daysLeft:4, pct:55, color:'var(--brand-500)' },
+            ].map(d => `
+              <div style="margin-bottom:16px;">
+                <div class="flex-between mb-4">
+                  <span style="font-size:13px;font-weight:600;color:var(--gray-800);">${d.title}</span>
+                  <span class="badge badge-${d.daysLeft<=2?'red':d.daysLeft<=4?'orange':'gray'}">${d.daysLeft}d left</span>
+                </div>
+                <div style="font-size:11px;color:var(--gray-400);margin-bottom:5px;">Due ${d.due}</div>
+                <div class="progress-bar" style="height:5px;">
+                  <div class="progress-fill" style="height:5px;width:${d.pct}%;background:${d.color};border-radius:99px;"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right col -->
+      <div>
+        <!-- Performance Score -->
+        <div class="card section-gap">
+          <div class="card-header"><h3 class="card-title">My Performance</h3></div>
+          <div class="card-body">
+            <div style="text-align:center;margin-bottom:16px;">
+              <svg viewBox="0 0 120 120" width="120" height="120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--gray-100)" stroke-width="12"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="url(#pg)" stroke-width="12"
+                  stroke-dasharray="276.5" stroke-dashoffset="${(276.5*(1-.98)).toFixed(1)}"
+                  transform="rotate(-90 60 60)" stroke-linecap="round"/>
+                <defs><linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#8B5CF6"/>
+                </linearGradient></defs>
+                <text x="60" y="56" text-anchor="middle" font-size="22" font-weight="800" fill="var(--gray-900)">98%</text>
+                <text x="60" y="72" text-anchor="middle" font-size="10" fill="var(--gray-400)">Score</text>
+              </svg>
+            </div>
+            ${[
+              { label:'Task Completion', val:98, color:'blue' },
+              { label:'On-Time Delivery', val:96, color:'green' },
+              { label:'Quality Score', val:94, color:'purple' },
+              { label:'Collaboration', val:92, color:'orange' },
+            ].map(m => `
+              <div style="margin-bottom:10px;">
+                <div class="flex-between mb-4">
+                  <span style="font-size:12px;color:var(--gray-600);">${m.label}</span>
+                  <span style="font-size:12px;font-weight:700;">${m.val}%</span>
+                </div>
+                <div class="progress-bar" style="height:6px;">
+                  <div class="progress-fill ${m.color}" data-pct="${m.val}"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="card section-gap">
+          <div class="card-header"><h3 class="card-title">🔔 Notifications</h3></div>
+          <div class="notif-list">
+            ${[
+              { icon:'⚡', iconBg:'var(--brand-50)', title:'Task assigned', desc:'"Mobile UI Redesign" was assigned to you', time:'30m', unread:true },
+              { icon:'💬', iconBg:'var(--purple-50)', title:'Comment on your task', desc:'Mike commented on "API Integration"', time:'2h', unread:true },
+              { icon:'🏆', iconBg:'var(--warning-50)', title:'Achievement unlocked', desc:'50 tasks completed this quarter!', time:'1d', unread:false },
+            ].map(n => `
+              <div class="notif-item${n.unread?' unread':''}">
+                <div class="notif-icon" style="background:${n.iconBg};">${n.icon}</div>
+                <div class="notif-body">
+                  <div class="notif-title">${n.title}</div>
+                  <div class="notif-desc">${n.desc}</div>
+                  <div class="notif-time">${n.time}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Daily Summary -->
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">📅 Today's Activity</h3></div>
+          <div class="card-body-p0">
+            ${[
+              { time:'09:12', text:'Started working on API Integration', color:'var(--brand-500)' },
+              { time:'10:30', text:'Reviewed PR #139 by Mike Ross', color:'var(--purple-500)' },
+              { time:'11:45', text:'Team standup call · 25 min', color:'var(--success-500)' },
+              { time:'13:20', text:'Completed DB Schema Review task', color:'var(--success-500)' },
+              { time:'14:55', text:'Updated sprint board', color:'var(--warning-500)' },
+            ].map(a => `
+              <div class="daily-activity-item">
+                <div class="timeline-dot" style="background:${a.color}"></div>
+                <div style="flex:1;">
+                  <div style="font-size:13px;color:var(--gray-800);">${a.text}</div>
+                  <div style="font-size:11px;color:var(--gray-400);margin-top:2px;">${a.time}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+<div class="toast-container" id="toast-container"></div>
+<script src="app.js"></script>
+<script src="shell.js"></script>
+<script>
+  renderShell({ role: 'employee', page: 'employee-dashboard.html', title: 'My Dashboard' });
+
+  function toggleTask(el) {
+    el.classList.toggle('done');
+    el.textContent = el.classList.contains('done') ? '✓' : '';
+    const title = el.nextElementSibling?.querySelector('div:first-child');
+    if (title) {
+      title.style.textDecoration = el.classList.contains('done') ? 'line-through' : 'none';
+      title.style.color = el.classList.contains('done') ? 'var(--gray-400)' : 'var(--gray-900)';
+    }
+    if (el.classList.contains('done')) Toast.success('Task marked as complete!');
+  }
+
+  function filterMyTasks(status, btn) {
+    document.querySelectorAll('.task-filter-btn').forEach(b => b.style.color = '');
+    btn.style.color = 'var(--brand-600)';
+    document.querySelectorAll('.my-task-item').forEach(item => {
+      item.style.display = (status === 'all' || item.dataset.status === status) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>
