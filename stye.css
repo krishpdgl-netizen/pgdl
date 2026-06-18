@@ -1,0 +1,427 @@
+/* ==========================================================
+   PANACHE WMS DESIGN SYSTEM
+========================================================== */
+
+:root{
+
+    /* Brand */
+    --brand-50:#eff6ff;
+    --brand-100:#dbeafe;
+    --brand-200:#bfdbfe;
+    --brand-500:#3b82f6;
+    --brand-600:#2563eb;
+    --brand-700:#1d4ed8;
+
+    /* Gray */
+    --gray-50:#f9fafb;
+    --gray-100:#f3f4f6;
+    --gray-200:#e5e7eb;
+    --gray-300:#d1d5db;
+    --gray-400:#9ca3af;
+    --gray-500:#6b7280;
+    --gray-600:#4b5563;
+    --gray-700:#374151;
+    --gray-800:#1f2937;
+    --gray-900:#111827;
+
+    /* Success */
+    --success-50:#ecfdf5;
+    --success-500:#10b981;
+    --success-700:#047857;
+
+    /* Warning */
+    --warning-50:#fffbeb;
+    --warning-500:#f59e0b;
+    --warning-700:#b45309;
+
+    /* Purple */
+    --purple-50:#f5f3ff;
+    --purple-700:#6d28d9;
+
+    /* Radius */
+    --radius-sm:6px;
+    --radius-md:10px;
+    --radius-lg:16px;
+    --radius-xl:20px;
+
+    /* Shadows */
+    --shadow-sm:0 2px 6px rgba(0,0,0,.06);
+    --shadow-md:0 4px 12px rgba(0,0,0,.08);
+    --shadow-lg:0 10px 25px rgba(0,0,0,.10);
+    --shadow-xl:0 20px 40px rgba(0,0,0,.12);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f4f7fc;
+    color:var(--gray-900);
+}
+
+/* ==========================================================
+   SIDEBAR
+========================================================== */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:280px;
+    height:100vh;
+    background:#111827;
+    display:flex;
+    flex-direction:column;
+    padding:20px;
+    z-index:1000;
+}
+
+.sidebar-logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:30px;
+}
+
+.sidebar-logo-icon{
+    width:42px;
+    height:42px;
+    background:var(--brand-600);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-weight:bold;
+}
+
+.sidebar-logo-text{
+    color:white;
+    font-weight:700;
+    font-size:18px;
+}
+
+.sidebar-logo-sub{
+    color:var(--gray-400);
+    font-size:12px;
+}
+
+.sidebar-section{
+    margin-bottom:20px;
+}
+
+.sidebar-section-label{
+    color:var(--gray-500);
+    font-size:11px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+    padding-left:10px;
+}
+
+.nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    border-radius:10px;
+    text-decoration:none;
+    color:#d1d5db;
+    margin-bottom:4px;
+    transition:.2s;
+}
+
+.nav-item:hover{
+    background:#1f2937;
+    color:white;
+}
+
+.nav-item.active{
+    background:var(--brand-600);
+    color:white;
+}
+
+.nav-icon{
+    width:20px;
+    text-align:center;
+}
+
+.nav-badge{
+    margin-left:auto;
+    background:red;
+    color:white;
+    padding:2px 8px;
+    border-radius:20px;
+    font-size:10px;
+}
+
+.sidebar-footer{
+    margin-top:auto;
+}
+
+.sidebar-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.sidebar-user:hover{
+    background:#1f2937;
+}
+
+.sidebar-avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.sidebar-user-name{
+    color:white;
+    font-size:14px;
+}
+
+.sidebar-user-role{
+    color:var(--gray-400);
+    font-size:12px;
+}
+
+/* ==========================================================
+   TOPBAR
+========================================================== */
+
+.topbar{
+    margin-left:280px;
+    height:70px;
+    background:white;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:0 25px;
+    box-shadow:var(--shadow-sm);
+    position:sticky;
+    top:0;
+    z-index:500;
+}
+
+.topbar-title{
+    font-size:22px;
+    font-weight:700;
+}
+
+.topbar-search{
+    flex:1;
+    position:relative;
+}
+
+.topbar-search input{
+    width:100%;
+    padding:12px 14px 12px 40px;
+    border:1px solid var(--gray-200);
+    border-radius:12px;
+}
+
+.topbar-search-icon{
+    position:absolute;
+    left:14px;
+    top:12px;
+}
+
+.topbar-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.topbar-btn{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:10px;
+    background:var(--gray-100);
+    cursor:pointer;
+}
+
+.topbar-btn:hover{
+    background:var(--gray-200);
+}
+
+.topbar-avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.topbar-notif-dot{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:red;
+    border-radius:50%;
+    top:10px;
+    right:10px;
+}
+
+/* ==========================================================
+   CONTENT
+========================================================== */
+
+.main{
+    margin-left:280px;
+    padding:25px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:var(--shadow-md);
+}
+
+.section{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    margin-top:20px;
+    box-shadow:var(--shadow-md);
+}
+
+/* ==========================================================
+   TABLES
+========================================================== */
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:var(--gray-100);
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid var(--gray-200);
+}
+
+/* ==========================================================
+   FORMS
+========================================================== */
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid var(--gray-300);
+    border-radius:10px;
+}
+
+.form-group{
+    margin-bottom:16px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+.btn{
+    background:var(--brand-600);
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:var(--brand-700);
+}
+
+/* ==========================================================
+   NOTIFICATIONS
+========================================================== */
+
+.notif-item{
+    display:flex;
+    gap:12px;
+    padding:14px;
+    border-bottom:1px solid var(--gray-100);
+}
+
+.notif-item.unread{
+    background:#f8fbff;
+}
+
+.notif-icon{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.notif-title{
+    font-weight:600;
+    margin-bottom:4px;
+}
+
+.notif-desc{
+    color:var(--gray-600);
+    font-size:13px;
+}
+
+.notif-time{
+    color:var(--gray-400);
+    font-size:11px;
+    margin-top:4px;
+}
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media(max-width:900px){
+
+    .sidebar{
+        transform:translateX(-100%);
+    }
+
+    .topbar{
+        margin-left:0;
+    }
+
+    .main{
+        margin-left:0;
+    }
+}
