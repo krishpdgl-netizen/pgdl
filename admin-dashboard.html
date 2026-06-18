@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Dashboard — Panache WMS</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .quick-action-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .quick-action {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 18px 12px; border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200); background: #fff;
+      cursor: pointer; transition: all .2s; font-size: 12px; font-weight: 600; color: var(--gray-600);
+      text-decoration: none;
+    }
+    .quick-action:hover { border-color: var(--brand-400); color: var(--brand-700); background: var(--brand-50); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .quick-action-icon { font-size: 26px; }
+    .dept-row { display: flex; align-items: center; gap: 12px; padding: 10px 20px; border-bottom: 1px solid var(--gray-100); }
+    .dept-row:last-child { border-bottom: none; }
+    .dept-name { font-size: 13px; font-weight: 600; color: var(--gray-700); width: 120px; flex-shrink: 0; }
+    .dept-bar-wrap { flex: 1; }
+    .dept-count { font-size: 12px; color: var(--gray-500); width: 60px; text-align: right; flex-shrink: 0; }
+    .top-employee { display: flex; align-items: center; gap: 12px; padding: 10px 20px; border-bottom: 1px solid var(--gray-100); }
+    .top-employee:last-child { border-bottom: none; }
+    .rank-badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; }
+    .rank-1 { background: #FEF3C7; color: #92400E; }
+    .rank-2 { background: var(--gray-100); color: var(--gray-600); }
+    .rank-3 { background: #FEF3C7; color: var(--warning-700); }
+    .wf-stat { text-align: center; padding: 16px 12px; }
+    .wf-stat-num { font-size: 24px; font-weight: 800; color: var(--gray-900); }
+    .wf-stat-label { font-size: 11px; color: var(--gray-500); margin-top: 4px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar"></nav>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <header class="topbar"></header>
+  <main class="main-content fade-in">
+
+    <!-- Page Header -->
+    <div class="flex-between mb-24">
+      <div class="page-header" style="margin:0;">
+        <h1 class="page-title">Company Overview</h1>
+        <p class="page-subtitle">Thursday, June 18, 2026 &nbsp;·&nbsp; All departments</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-secondary btn-sm">📥 Export Report</button>
+        <a href="create-task.html" class="btn btn-primary btn-sm">＋ New Task</a>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid section-gap">
+      <div class="kpi-card blue">
+        <div class="kpi-icon blue">👥</div>
+        <div class="kpi-label">Total Employees</div>
+        <div class="kpi-value">248</div>
+        <div class="kpi-meta"><span class="kpi-change up">↑ 12</span> vs last month</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon green">✅</div>
+        <div class="kpi-label">Tasks Completed</div>
+        <div class="kpi-value">1,847</div>
+        <div class="kpi-meta"><span class="kpi-change up">↑ 8.4%</span> vs last week</div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-icon orange">⚡</div>
+        <div class="kpi-label">Active Tasks</div>
+        <div class="kpi-value">342</div>
+        <div class="kpi-meta"><span class="kpi-change down">↓ 3</span> from yesterday</div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-icon purple">📈</div>
+        <div class="kpi-label">Avg. Productivity</div>
+        <div class="kpi-value">87%</div>
+        <div class="kpi-meta"><span class="kpi-change up">↑ 2.1%</span> this quarter</div>
+      </div>
+    </div>
+
+    <!-- Second row KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;" class="section-gap">
+      <div class="kpi-card red">
+        <div class="kpi-icon red">⏰</div>
+        <div class="kpi-label">Overdue Tasks</div>
+        <div class="kpi-value">18</div>
+        <div class="kpi-meta"><span class="kpi-change down">↑ 4</span> needs attention</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-icon blue">🏢</div>
+        <div class="kpi-label">Departments</div>
+        <div class="kpi-value">9</div>
+        <div class="kpi-meta">Across 3 offices</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon green">🎯</div>
+        <div class="kpi-label">On-Time Rate</div>
+        <div class="kpi-value">94%</div>
+        <div class="kpi-meta"><span class="kpi-change up">↑ 1.2%</span> this month</div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-icon orange">🔄</div>
+        <div class="kpi-label">Workflows Active</div>
+        <div class="kpi-value">23</div>
+        <div class="kpi-meta">Across all teams</div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid-2-1 section-gap">
+      <!-- Task Completion Trend -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Task Completion Trend</h3>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="setRange(this,'7d')" style="color:var(--brand-600);">7d</button>
+            <button class="btn btn-ghost btn-sm" onclick="setRange(this,'30d')">30d</button>
+            <button class="btn btn-ghost btn-sm" onclick="setRange(this,'90d')">90d</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="task-bar-chart" class="chart-placeholder" style="height:200px;"></div>
+        </div>
+      </div>
+
+      <!-- Task Status Donut -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Task Status</h3></div>
+        <div class="card-body">
+          <div id="task-donut"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Row: Departments + Activity -->
+    <div class="grid-2-1 section-gap">
+      <!-- Department Stats -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:12px;">
+          <h3 class="card-title">Department Headcount</h3>
+          <a href="employee-management.html" class="btn btn-ghost btn-sm">View all →</a>
+        </div>
+        <div class="card-body-p0">
+          <div id="dept-list">
+            ${[
+              { name: 'Engineering',  count: 68, total: 248, color: 'blue' },
+              { name: 'Product',      count: 24, total: 248, color: 'purple' },
+              { name: 'Marketing',    count: 31, total: 248, color: 'orange' },
+              { name: 'Design',       count: 19, total: 248, color: 'green' },
+              { name: 'Sales',        count: 42, total: 248, color: 'blue' },
+              { name: 'Support',      count: 28, total: 248, color: 'green' },
+              { name: 'Operations',   count: 21, total: 248, color: 'orange' },
+              { name: 'Finance',      count: 15, total: 248, color: 'red' },
+            ].map(d => `
+              <div class="dept-row">
+                <div class="dept-name">${d.name}</div>
+                <div class="dept-bar-wrap">
+                  <div class="progress-bar" style="height:8px;">
+                    <div class="progress-fill ${d.color}" data-pct="${Math.round(d.count/d.total*100)}"></div>
+                  </div>
+                </div>
+                <div class="dept-count">${d.count} staff</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Feed -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0;">
+          <h3 class="card-title">Recent Activity</h3>
+          <span class="badge badge-green">Live</span>
+        </div>
+        <div class="card-body-p0">
+          <div class="activity-feed" id="activity-feed">
+            ${[
+              { avatar: 'SC', color: '#3B82F6', text: '<strong>Sarah Chen</strong> completed "API Integration Module"', time: '2m ago' },
+              { avatar: 'MR', color: '#8B5CF6', text: '<strong>Mike Ross</strong> created a new task "Mobile UI Redesign"', time: '14m ago' },
+              { avatar: 'JL', color: '#22C55E', text: '<strong>James Liu</strong> was added to the Engineering team', time: '1h ago' },
+              { avatar: 'AP', color: '#F59E0B', text: '<strong>Anna Park</strong> moved "Database Migration" to Review', time: '2h ago' },
+              { avatar: 'DK', color: '#EF4444', text: '<strong>Dev Kumar</strong> flagged "Payment Gateway" as high priority', time: '3h ago' },
+              { avatar: 'TC', color: '#06B6D4', text: '<strong>Tina Clarke</strong> approved Q3 performance review', time: '5h ago' },
+              { avatar: 'RM', color: '#EC4899', text: '<strong>Raj Mehta</strong> updated department budget forecast', time: '6h ago' },
+            ].map(a => `
+              <div class="activity-item">
+                <div class="activity-avatar" style="background:${a.color}">${a.avatar}</div>
+                <div class="activity-body">
+                  <div class="activity-text">${a.text}</div>
+                  <div class="activity-time">${a.time}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="text-muted">Showing latest 7 events</span>
+          <button class="btn btn-ghost btn-sm">Load more</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row: Top Performers + Workflow + Quick Actions -->
+    <div class="grid-3 section-gap">
+      <!-- Top Performers -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🏆 Top Performers</h3></div>
+        <div class="card-body-p0">
+          ${[
+            { rank:1, name:'Sarah Chen',    role:'Senior Engineer',    score:98, tasks:47, avatar:'SC', color:'#3B82F6' },
+            { rank:2, name:'Anna Park',     role:'Product Manager',    score:95, tasks:38, avatar:'AP', color:'#F59E0B' },
+            { rank:3, name:'James Liu',     role:'UX Designer',        score:92, tasks:29, avatar:'JL', color:'#22C55E' },
+            { rank:4, name:'Mike Ross',     role:'Backend Engineer',   score:89, tasks:34, avatar:'MR', color:'#8B5CF6' },
+            { rank:5, name:'Tina Clarke',   role:'Marketing Lead',     score:87, tasks:26, avatar:'TC', color:'#06B6D4' },
+          ].map(e => `
+            <div class="top-employee">
+              <div class="rank-badge rank-${Math.min(e.rank,3)}">${e.rank}</div>
+              <div class="activity-avatar" style="background:${e.color}">${e.avatar}</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:600;color:var(--gray-900);">${e.name}</div>
+                <div style="font-size:11px;color:var(--gray-400);">${e.role} · ${e.tasks} tasks</div>
+              </div>
+              <div style="font-size:13px;font-weight:700;color:var(--success-700);">${e.score}%</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="card-footer">
+          <a href="reports.html" class="btn btn-ghost btn-sm">Full report →</a>
+        </div>
+      </div>
+
+      <!-- Workflow Stats -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📋 Workflow Summary</h3></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--gray-100);border-radius:var(--radius-md);overflow:hidden;">
+            ${[
+              { label:'Todo',       count:89,  color:'var(--gray-500)' },
+              { label:'In Progress',count:124, color:'var(--brand-500)' },
+              { label:'In Review',  count:63,  color:'var(--warning-500)' },
+              { label:'Completed',  count:342, color:'var(--success-500)' },
+            ].map(s => `
+              <div class="wf-stat" style="border-right:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100);">
+                <div class="wf-stat-num" style="color:${s.color}">${s.count}</div>
+                <div class="wf-stat-label">${s.label}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div style="margin-top:20px;">
+            <div class="flex-between mb-8">
+              <span style="font-size:12px;color:var(--gray-500);">Sprint completion</span>
+              <span style="font-size:12px;font-weight:700;color:var(--gray-800);">73%</span>
+            </div>
+            <div class="progress-bar" style="height:10px;">
+              <div class="progress-fill blue" data-pct="73"></div>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <div class="flex-between mb-8">
+              <span style="font-size:12px;color:var(--gray-500);">Monthly goal</span>
+              <span style="font-size:12px;font-weight:700;color:var(--gray-800);">91%</span>
+            </div>
+            <div class="progress-bar" style="height:10px;">
+              <div class="progress-fill green" data-pct="91"></div>
+            </div>
+          </div>
+          <div style="margin-top:20px;text-align:center;">
+            <a href="workflow-board.html" class="btn btn-outline-primary btn-sm w-full">View Kanban Board →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">⚡ Quick Actions</h3></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <a href="create-task.html" class="quick-action">
+              <span class="quick-action-icon">✅</span>New Task
+            </a>
+            <a href="employee-management.html" class="quick-action">
+              <span class="quick-action-icon">👤</span>Add Employee
+            </a>
+            <a href="reports.html" class="quick-action">
+              <span class="quick-action-icon">📊</span>Run Report
+            </a>
+            <a href="workflow-board.html" class="quick-action">
+              <span class="quick-action-icon">📋</span>Kanban Board
+            </a>
+            <a href="ai-assistant.html" class="quick-action">
+              <span class="quick-action-icon">🤖</span>AI Insights
+            </a>
+            <a href="settings.html" class="quick-action">
+              <span class="quick-action-icon">⚙️</span>Settings
+            </a>
+          </div>
+          <div style="margin-top:16px;padding:14px;background:linear-gradient(135deg,var(--brand-50),var(--purple-50));border-radius:var(--radius-md);border:1px solid var(--brand-100);">
+            <div style="font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:4px;">🤖 AI Suggestion</div>
+            <div style="font-size:12px;color:var(--gray-600);line-height:1.5;">Engineering team has 23% higher workload than others. Consider redistributing 8 tasks.</div>
+            <a href="ai-assistant.html" class="btn btn-primary btn-sm" style="margin-top:10px;">View recommendations →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script src="app.js"></script>
+<script src="shell.js"></script>
+<script>
+  renderShell({ role: Auth.getRole(), page: 'admin-dashboard.html', title: 'Admin Dashboard' });
+
+  // Charts
+  Charts.renderBars('task-bar-chart', [
+    {label:'Mon', value:42},{label:'Tue', value:67},{label:'Wed', value:51},{label:'Thu', value:88},
+    {label:'Fri', value:73},{label:'Sat', value:29},{label:'Sun', value:34},
+  ], { colors: ['linear-gradient(180deg,#60A5FA,#2563EB)'] });
+
+  Charts.renderDonut('task-donut', [
+    { label: 'Completed', value: 342, color: '#22C55E' },
+    { label: 'In Progress', value: 124, color: '#3B82F6' },
+    { label: 'Todo', value: 89, color: '#D1D5DB' },
+    { label: 'In Review', value: 63, color: '#F59E0B' },
+  ], { centerLabel: true });
+
+  function setRange(btn, range) {
+    document.querySelectorAll('.card-header .btn-ghost').forEach(b => b.style.color = '');
+    btn.style.color = 'var(--brand-600)';
+    const data = {
+      '7d':  [{label:'Mon',value:42},{label:'Tue',value:67},{label:'Wed',value:51},{label:'Thu',value:88},{label:'Fri',value:73},{label:'Sat',value:29},{label:'Sun',value:34}],
+      '30d': [{label:'W1',value:180},{label:'W2',value:220},{label:'W3',value:195},{label:'W4',value:267}],
+      '90d': [{label:'Apr',value:680},{label:'May',value:820},{label:'Jun',value:940}],
+    };
+    Charts.renderBars('task-bar-chart', data[range] || data['7d'], { colors: ['linear-gradient(180deg,#60A5FA,#2563EB)'] });
+  }
+</script>
+</body>
+</html>
