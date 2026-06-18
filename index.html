@@ -234,37 +234,35 @@
     }
   }
 
-  document.getElementById('login-form').addEventListener('submit', async function(e) {
+  document.getElementById("login-form").addEventListener("submit", function(e){
+
     e.preventDefault();
-    const emailEl = document.getElementById('email');
-    const passEl  = document.getElementById('password');
-    let valid = true;
-    if (!Validate.field(emailEl, { required: true, email: true })) valid = false;
-    if (!Validate.field(passEl,  { required: true, minLen: 6 }))   valid = false;
-    if (!valid) return;
 
-    const btn  = document.getElementById('login-btn');
-    const text = document.getElementById('login-btn-text');
-    const spin = document.getElementById('login-spinner');
-    btn.disabled = true; text.textContent = 'Signing in…'; spin.style.display = 'inline'; spin.classList.add('spin');
+    const role =
+    document.getElementById("selected-role").value;
 
-    try {
-      /* Actual API call:
-      const res = await API.login(emailEl.value, passEl.value, selectedRole);
-      Auth.setSession(res.token, res.user, res.role);
-      Auth.redirectByRole(res.role);
-      */
+    if(role === "admin"){
 
-      // Demo: simulate login
-      await new Promise(r => setTimeout(r, 1200));
-      Auth.setSession('demo-token-xyz', { name: 'Demo User', email: emailEl.value }, selectedRole);
-      Toast.success('Signed in successfully. Redirecting…');
-      setTimeout(() => Auth.redirectByRole(selectedRole), 900);
-    } catch (err) {
-      Toast.error('Invalid credentials. Please try again.');
-      btn.disabled = false; text.textContent = 'Sign in'; spin.style.display = 'none'; spin.classList.remove('spin');
+        window.location.href =
+        "admin-dashboard.html";
+
     }
-  });
+
+    else if(role === "manager"){
+
+        window.location.href =
+        "manager-dashboard.html";
+
+    }
+
+    else{
+
+        window.location.href =
+        "employee-dashboard.html";
+
+    }
+
+});
 
   // Mobile logo
   if (window.innerWidth < 900) document.getElementById('mobile-logo').style.display = 'flex';
