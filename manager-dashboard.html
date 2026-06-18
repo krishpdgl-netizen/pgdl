@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Manager Dashboard — Panache WMS</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .team-member-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; border-radius: var(--radius-md);
+      border: 1px solid var(--gray-100); background: var(--gray-25);
+      transition: all .15s;
+    }
+    .team-member-card:hover { border-color: var(--brand-200); background: var(--brand-50); }
+    .workload-indicator { height: 6px; border-radius: 99px; background: var(--gray-200); margin-top: 6px; }
+    .ai-rec { display: flex; gap: 12px; padding: 14px; border-radius: var(--radius-md); border: 1px solid; margin-bottom: 10px; }
+    .ai-rec.warning { background: var(--warning-50); border-color: #FCD34D; }
+    .ai-rec.info    { background: var(--brand-50);   border-color: var(--brand-200); }
+    .ai-rec.success { background: var(--success-50); border-color: #86EFAC; }
+    .ai-rec-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .ai-rec-title { font-size: 13px; font-weight: 700; color: var(--gray-900); }
+    .ai-rec-desc  { font-size: 12px; color: var(--gray-600); margin-top: 3px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar"></nav>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <header class="topbar"></header>
+  <main class="main-content fade-in">
+
+    <div class="flex-between mb-24">
+      <div>
+        <h1 class="page-title">Team Dashboard</h1>
+        <p class="page-subtitle">Engineering Team &nbsp;·&nbsp; 14 members</p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <a href="create-task.html" class="btn btn-primary">＋ Create Task</a>
+        <a href="workflow-board.html" class="btn btn-secondary">📋 Board View</a>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid section-gap">
+      <div class="kpi-card blue">
+        <div class="kpi-icon blue">👥</div>
+        <div class="kpi-label">Team Members</div>
+        <div class="kpi-value">14</div>
+        <div class="kpi-meta">2 on leave today</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-icon green">✅</div>
+        <div class="kpi-label">Completed This Week</div>
+        <div class="kpi-value">47</div>
+        <div class="kpi-meta"><span class="kpi-change up">↑ 9</span> vs last week</div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-icon orange">⚡</div>
+        <div class="kpi-label">In Progress</div>
+        <div class="kpi-value">23</div>
+        <div class="kpi-meta">Across 5 projects</div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-icon purple">📈</div>
+        <div class="kpi-label">Team Productivity</div>
+        <div class="kpi-value">91%</div>
+        <div class="kpi-meta"><span class="kpi-change up">↑ 3%</span> this sprint</div>
+      </div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="grid-2-1 section-gap">
+      <!-- Team Overview -->
+      <div>
+        <!-- Team Workload -->
+        <div class="card section-gap">
+          <div class="card-header">
+            <h3 class="card-title">Team Workload</h3>
+            <a href="employee-management.html" class="btn btn-ghost btn-sm">Manage team →</a>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="team-grid">
+              ${[
+                { name:'Sarah Chen',   role:'Sr. Engineer',   tasks:8,  cap:10, score:98, avatar:'SC', color:'#3B82F6', load:80 },
+                { name:'Mike Ross',    role:'Engineer',        tasks:6,  cap:10, score:87, avatar:'MR', color:'#8B5CF6', load:60 },
+                { name:'Jenny Kim',    role:'Frontend Dev',    tasks:9,  cap:10, score:93, avatar:'JK', color:'#22C55E', load:90 },
+                { name:'Dev Kumar',    role:'Backend Dev',     tasks:4,  cap:10, score:79, avatar:'DK', color:'#F59E0B', load:40 },
+                { name:'Tina Clarke',  role:'QA Engineer',     tasks:7,  cap:10, score:85, avatar:'TC', color:'#06B6D4', load:70 },
+                { name:'Ryan Walsh',   role:'DevOps',          tasks:5,  cap:10, score:82, avatar:'RW', color:'#EC4899', load:50 },
+              ].map(m => `
+                <div class="team-member-card">
+                  <div class="avatar" style="background:${m.color}">${m.avatar}</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-size:13px;font-weight:600;color:var(--gray-900);">${m.name}</div>
+                    <div style="font-size:11px;color:var(--gray-400);">${m.role}</div>
+                    <div class="workload-indicator">
+                      <div class="progress-fill ${m.load>80?'red':m.load>60?'orange':'green'}" data-pct="${m.load}" style="height:6px;"></div>
+                    </div>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0;">
+                    <div style="font-size:12px;font-weight:700;color:${m.load>80?'var(--danger-600)':m.load>60?'var(--warning-600)':'var(--success-600)'};">${m.load}%</div>
+                    <div style="font-size:10px;color:var(--gray-400);">${m.tasks}/${m.cap} tasks</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Table -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Assigned Tasks</h3>
+            <div style="display:flex;gap:8px;">
+              <select class="form-control" style="width:auto;padding:6px 28px 6px 10px;font-size:12px;" id="task-filter" onchange="filterTasks()">
+                <option value="">All Status</option>
+                <option value="todo">Todo</option>
+                <option value="in-progress">In Progress</option>
+                <option value="review">Review</option>
+                <option value="done">Done</option>
+              </select>
+              <a href="create-task.html" class="btn btn-primary btn-sm">＋ Add</a>
+            </div>
+          </div>
+          <div class="card-body-p0">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Task</th><th>Assignee</th><th>Priority</th><th>Status</th><th>Due</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="manager-task-tbody">
+                  ${[
+                    { title:'API Integration Module',    assignee:'Sarah Chen',  priority:'high',   status:'in-progress', statusLabel:'In Progress', due:'Jun 20', avatar:'SC', color:'#3B82F6' },
+                    { title:'Mobile UI Redesign',        assignee:'Jenny Kim',   priority:'high',   status:'todo',        statusLabel:'Todo',        due:'Jun 22', avatar:'JK', color:'#22C55E' },
+                    { title:'Database Schema Migration', assignee:'Dev Kumar',   priority:'medium', status:'review',      statusLabel:'Review',      due:'Jun 21', avatar:'DK', color:'#F59E0B' },
+                    { title:'Unit Test Coverage',        assignee:'Tina Clarke', priority:'low',    status:'in-progress', statusLabel:'In Progress', due:'Jun 25', avatar:'TC', color:'#06B6D4' },
+                    { title:'CI/CD Pipeline Update',     assignee:'Ryan Walsh',  priority:'medium', status:'todo',        statusLabel:'Todo',        due:'Jun 28', avatar:'RW', color:'#EC4899' },
+                    { title:'Security Audit',            assignee:'Mike Ross',   priority:'high',   status:'done',        statusLabel:'Done',        due:'Jun 18', avatar:'MR', color:'#8B5CF6' },
+                  ].map(t => `
+                    <tr data-status="${t.status}">
+                      <td><div style="font-weight:600;color:var(--gray-900);">${t.title}</div></td>
+                      <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                          <div class="avatar avatar-sm" style="background:${t.color}">${t.avatar}</div>
+                          <span>${t.assignee}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge badge-${t.priority==='high'?'red':t.priority==='medium'?'orange':'gray'}">
+                          <span class="priority-dot dot-${t.priority}"></span>${t.priority}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge badge-${t.status==='done'?'green':t.status==='in-progress'?'blue':t.status==='review'?'orange':'gray'}">${t.statusLabel}</span>
+                      </td>
+                      <td><span style="font-size:12px;color:${t.status==='done'?'var(--gray-400)':'var(--gray-700)'};">${t.due}</span></td>
+                      <td>
+                        <div class="table-actions">
+                          <a href="create-task.html?edit=1" class="btn btn-secondary btn-sm">✏️ Edit</a>
+                          <button class="btn btn-ghost btn-sm" onclick="deleteTask(this)">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div>
+        <!-- AI Recommendations -->
+        <div class="card section-gap">
+          <div class="card-header">
+            <h3 class="card-title">🤖 AI Recommendations</h3>
+            <a href="ai-assistant.html" class="btn btn-ghost btn-sm">Full AI →</a>
+          </div>
+          <div class="card-body">
+            <div class="ai-rec warning">
+              <div class="ai-rec-icon">⚠️</div>
+              <div>
+                <div class="ai-rec-title">Workload imbalance detected</div>
+                <div class="ai-rec-desc">Jenny Kim is at 90% capacity. Consider moving 2 tasks to Dev Kumar (40%).</div>
+              </div>
+            </div>
+            <div class="ai-rec info">
+              <div class="ai-rec-icon">💡</div>
+              <div>
+                <div class="ai-rec-title">Sprint risk identified</div>
+                <div class="ai-rec-desc">3 tasks may miss the Jun 22 deadline based on current velocity.</div>
+              </div>
+            </div>
+            <div class="ai-rec success">
+              <div class="ai-rec-icon">✅</div>
+              <div>
+                <div class="ai-rec-title">High performer streak</div>
+                <div class="ai-rec-desc">Sarah Chen has completed tasks 18% faster than average this sprint.</div>
+              </div>
+            </div>
+            <a href="ai-assistant.html" class="btn btn-outline-primary btn-sm w-full mt-8">Ask AI Assistant</a>
+          </div>
+        </div>
+
+        <!-- Productivity Chart -->
+        <div class="card section-gap">
+          <div class="card-header"><h3 class="card-title">Productivity by Day</h3></div>
+          <div class="card-body">
+            <div id="prod-chart" class="chart-placeholder" style="height:140px;"></div>
+          </div>
+        </div>
+
+        <!-- Task Breakdown -->
+        <div class="card section-gap">
+          <div class="card-header"><h3 class="card-title">Task Breakdown</h3></div>
+          <div class="card-body">
+            ${[
+              { label:'✅ Completed', count:47, pct:49, color:'green' },
+              { label:'⚡ In Progress', count:23, pct:24, color:'blue' },
+              { label:'🔍 In Review', count:14, pct:15, color:'orange' },
+              { label:'📋 Todo', count:12, pct:12, color:'purple' },
+            ].map(s => `
+              <div style="margin-bottom:14px;">
+                <div class="flex-between mb-4">
+                  <span style="font-size:12px;color:var(--gray-600);">${s.label}</span>
+                  <span style="font-size:12px;font-weight:700;color:var(--gray-800);">${s.count} (${s.pct}%)</span>
+                </div>
+                <div class="progress-bar" style="height:7px;">
+                  <div class="progress-fill ${s.color}" data-pct="${s.pct}"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">🔔 Team Notifications</h3></div>
+          <div class="notif-list">
+            ${[
+              { icon:'⏰', iconBg:'var(--warning-50)', title:'Deadline in 24h', desc:'Q4 Report due tomorrow', time:'now', unread:true },
+              { icon:'✅', iconBg:'var(--success-50)', title:'Task completed', desc:'Sarah completed API Integration', time:'2m', unread:true },
+              { icon:'👤', iconBg:'var(--brand-50)', title:'New assignment', desc:'Dev Kumar added to project', time:'1h', unread:false },
+            ].map(n => `
+              <div class="notif-item${n.unread?' unread':''}">
+                <div class="notif-icon" style="background:${n.iconBg};">${n.icon}</div>
+                <div class="notif-body">
+                  <div class="notif-title">${n.title}</div>
+                  <div class="notif-desc">${n.desc}</div>
+                  <div class="notif-time">${n.time}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+<div class="toast-container" id="toast-container"></div>
+<script src="app.js"></script>
+<script src="shell.js"></script>
+<script>
+  renderShell({ role: Auth.getRole() || 'manager', page: 'manager-dashboard.html', title: 'Manager Dashboard' });
+
+  Charts.renderBars('prod-chart', [
+    {label:'M',value:72},{label:'T',value:89},{label:'W',value:65},{label:'T',value:94},{label:'F',value:87},
+  ], { colors: ['linear-gradient(180deg,#818CF8,#4F46E5)'] });
+
+  function filterTasks() {
+    const val = document.getElementById('task-filter').value;
+    document.querySelectorAll('#manager-task-tbody tr').forEach(row => {
+      row.style.display = (!val || row.dataset.status === val) ? '' : 'none';
+    });
+  }
+
+  function deleteTask(btn) {
+    const row = btn.closest('tr');
+    if (confirm('Delete this task?')) {
+      row.style.opacity = '0.4';
+      setTimeout(() => { row.remove(); Toast.success('Task deleted.'); }, 300);
+    }
+  }
+</script>
+</body>
+</html>
